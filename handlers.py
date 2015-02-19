@@ -14,4 +14,4 @@ class Handler(webapp2.RequestHandler):
 
 class FrontHandler(Handler):
     def get(self):
-        self.response.write('Hello world!!!')
+        self.response.write(utils.make_secure_val('Hello'))
