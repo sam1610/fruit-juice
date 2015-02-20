@@ -2,5 +2,5 @@ from handlers import * #Solo hay handlers, por lo que no causa problemas con el 
 
 app = webapp2.WSGIApplication([
     ('/', FrontHandler),
-    ('/signup/?', SignupHandler)
+    ('/signup/?', SignUpHandler)
 ], debug=True)
