@@ -1,7 +1,17 @@
+import os
+import jinja2
 import string, re
 import hashlib, hmac, random
 
 SECRET = 'imnotsosecret'
+
+template_dir = os.path.join(os.path.abspath(__file__ + "/../../"), 'templates')
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
+                               autoescape = True)
+
+def render_str(template, **params):
+    t = jinja_env.get_template(template)
+    return t.render(params)
 
 def hash_str(s):
     return hmac.new(SECRET, s).hexdigest() #Por defecto usa md5, cambiar a sha-1 o sha256 para uso real.
