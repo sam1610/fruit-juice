@@ -1,6 +1,6 @@
 import webapp2
 from lib import utils
-from lib.DB import userdb
+from lib.DB.userdb import User
 
 
 class Handler(webapp2.RequestHandler):
@@ -28,27 +28,27 @@ class SignUpHandler(Handler):
 
         args = dict(username = username, email = email)
         
-        if not functions.valid_username(username):
+        if not utils.valid_username(username):
             args['error_name'] = "That's not a valid username."
             error_flag = True
         dbo = User.all().filter("username",username)
         if dbo.get():
             args['error_name'] = "The user already exists."
             error_flag = True
-        if not functions.valid_password(password):
+        if not utils.valid_password(password):
             args['error_pass'] = "That's not a valid password."
             error_flag = True
         if not password == verify:
             args['error_verify'] = "Your passwords didn't match."
             error_flag = True
-        if email != "" and not functions.valid_email(email):
+        if email != "" and not utils.valid_email(email):
             args['error_email'] = "That's not a valid email."
             error_flag = "True"
 
         if error_flag:
             self.render("signup.html", **args)
         else:
-            password = functions.make_pw_hash(username, password)
+            password = utils.make_pw_hash(username, password)
             if email:
                 u = User(username = username, password = password, email = email)
             else:
@@ -56,10 +56,10 @@ class SignUpHandler(Handler):
 
             u.put()
 
-            secure_username = functions.make_secure_val(str(username))
+            secure_username = utils.make_secure_val(str(username))
             self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
             self.redirect("/welcome")
-            
+
 
 class FrontHandler(Handler):
     def get(self):
