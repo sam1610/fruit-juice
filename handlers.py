@@ -58,7 +58,7 @@ class SignUpHandler(Handler):
 
             secure_username = utils.make_secure_val(str(username))
             self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
-            self.redirect("/welcome")
+            self.redirect("/")
 
 
 class FrontHandler(Handler):
