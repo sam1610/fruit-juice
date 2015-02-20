@@ -14,6 +14,53 @@ class Handler(webapp2.RequestHandler):
         self.write(self.render_str(template, **kw))
 
 
+class SignUpHandler(Handler):
+    def get(self):
+        self.render("signup.html")
+
+    def post(self):
+        error_flag = False      
+
+        username = self.request.get("username")
+        password = self.request.get("password")
+        verify = self.request.get("verify")
+        email = self.request.get("email")
+
+        args = dict(username = username, email = email)
+        
+        if not functions.valid_username(username):
+            args['error_name'] = "That's not a valid username."
+            error_flag = True
+        dbo = User.all().filter("username",username)
+        if dbo.get():
+            args['error_name'] = "The user already exists."
+            error_flag = True
+        if not functions.valid_password(password):
+            args['error_pass'] = "That's not a valid password."
+            error_flag = True
+        if not password == verify:
+            args['error_verify'] = "Your passwords didn't match."
+            error_flag = True
+        if email != "" and not functions.valid_email(email):
+            args['error_email'] = "That's not a valid email."
+            error_flag = "True"
+
+        if error_flag:
+            self.render("signup.html", **args)
+        else:
+            password = functions.make_pw_hash(username, password)
+            if email:
+                u = User(username = username, password = password, email = email)
+            else:
+                u = User(username = username, password = password)
+
+            u.put()
+
+            secure_username = functions.make_secure_val(str(username))
+            self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
+            self.redirect("/welcome")
+            
+
 class FrontHandler(Handler):
     def get(self):
         self.render('front.html')
