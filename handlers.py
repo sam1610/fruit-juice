@@ -1,6 +1,7 @@
 import webapp2
 from lib import utils
 from lib.DB.userdb import User
+from lib.DB.pagedb import Page
 
 
 class Handler(webapp2.RequestHandler):
