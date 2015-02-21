@@ -79,8 +79,8 @@ class LoginHandler(Handler):
             user = User.all().filter("username", username).get()
             if user:
                 h = user.password
-                if functions.valid_pw(username, password, h):           
-                    secure_username = functions.make_secure_val(str(username))
+                if utils.valid_pw(username, password, h):           
+                    secure_username = utils.make_secure_val(str(username))
                     self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
                     self.redirect('/welcome')
                     return
