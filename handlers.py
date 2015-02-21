@@ -15,6 +15,11 @@ class Handler(webapp2.RequestHandler):
         self.write(self.render_str(template, **kw))
 
 
+class FrontHandler(Handler):
+    def get(self):
+        self.render('front.html')
+
+
 class SignUpHandler(Handler):
     def get(self):
         self.render("signup.html")
@@ -62,6 +67,22 @@ class SignUpHandler(Handler):
             self.redirect("/")
 
 
-class FrontHandler(Handler):
+class LoginHandler(Handler):
     def get(self):
-        self.render('front.html')
+        self.render("login.html")
+
+    def post(self):
+        username = self.request.get("username")
+        password = self.request.get("password")
+
+        if username and password:
+            user = User.all().filter("username", username).get()
+            if user:
+                h = user.password
+                if functions.valid_pw(username, password, h):           
+                    secure_username = functions.make_secure_val(str(username))
+                    self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
+                    self.redirect('/welcome')
+                    return
+        error = "Invalid login"
+        self.render("login.html", username = username, error_login = error)
