@@ -82,7 +82,7 @@ class LoginHandler(Handler):
                 if utils.valid_pw(username, password, h):           
                     secure_username = utils.make_secure_val(str(username))
                     self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
-                    self.redirect('/welcome')
+                    self.redirect('/')
                     return
         error = "Invalid login"
         self.render("login.html", username = username, error_login = error)
