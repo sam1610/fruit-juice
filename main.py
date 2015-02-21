@@ -1,6 +1,7 @@
-from handlers import * #Solo hay handlers, por lo que no causa problemas con el namespace.
+from handlers import * #Solo hay handlers, por lo que no causa problemas.
 
 app = webapp2.WSGIApplication([
     ('/', FrontHandler),
-    ('/signup/?', SignUpHandler)
+    ('/signup/?', SignUpHandler),
+    ('/login/?', LoginHandler)
 ], debug=True)
