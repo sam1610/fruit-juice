@@ -109,4 +109,5 @@ class EditPage(Handler):
 
 
 class WikiPage(Handler):
-    pass
+    def get(self, page_id):
+        self.write("The page ID is %s" % page_id)
