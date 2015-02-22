@@ -86,3 +86,27 @@ class LoginHandler(Handler):
                     return
         error = "Invalid login"
         self.render("login.html", username = username, error_login = error)
+
+
+class EditPage(Handler):
+    def render_form(self, subject="", content="", error=""):
+        self.render("newpage.html", subject=subject, content=content, error=error)
+
+    def get(self, pageid):
+        self.render_form()
+
+    def post(self):
+        subject = self.request.get("subject")
+        content = self.request.get("content")
+
+        if subject and content:
+            new_page = Page(subject=subject, content=content)
+            new_page.put()
+            time.sleep(1)            
+            self.redirect('/%s' % subject)
+        else:
+            self.render_form(subject,content,"Subject and content, please!")
+
+
+class WikiPage(Handler):
+    pass
