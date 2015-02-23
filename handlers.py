@@ -1,4 +1,5 @@
 import webapp2
+from google.appengine.ext import db
 from lib import utils
 from lib.DB.userdb import User
 from lib.DB.pagedb import Page
@@ -101,15 +102,19 @@ class EditPage(Handler):
         content = self.request.get("content")
 
         if subject and content:
-            new_page = Page(subject=subject, content=content)
-            self.write(page_id)
+            new_page = Page(key_name = page_id, content=content)
             new_page.put()
             time.sleep(1)            
-            self.redirect('/%s' % subject)
+            self.redirect('/%s' % page_id)
         else:
             self.render_form(subject,content,"Subject and content, please!")
 
 
 class WikiPage(Handler):
     def get(self, page_id):
-        self.write("The page ID is %s" % page_id)
+        db_key = db.Key.from_path('Page', page_id)
+        page = db.get(db_key)
+        if page:
+            self.write("The page ID is %s" % page_id)
+        else:
+            self.write("Nope, not here.")
