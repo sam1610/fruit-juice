@@ -91,23 +91,22 @@ class LoginHandler(Handler):
 
 
 class EditPage(Handler):
-    def render_form(self, subject="", content="", error=""):
-        self.render("newpage.html", subject=subject, content=content, error=error)
+    def render_form(self, content="", error=""):
+        self.render("newpage.html", content=content, error=error)
 
     def get(self, page_id):
         self.render_form()
 
     def post(self, page_id):
-        subject = self.request.get("subject")
         content = self.request.get("content")
 
-        if subject and content:
+        if content:
             new_page = Page(key_name = page_id, content=content)
             new_page.put()
             time.sleep(1)            
             self.redirect('/%s' % page_id)
         else:
-            self.render_form(subject,content,"Subject and content, please!")
+            self.render_form(content = content, error = "Content, please!")
 
 
 class WikiPage(Handler):
