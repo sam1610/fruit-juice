@@ -114,6 +114,6 @@ class WikiPage(Handler):
         db_key = db.Key.from_path('Page', page_id)
         page = db.get(db_key)
         if page:
-            self.write("The page ID is %s" % page_id)
+            self.write(page.content)
         else:
             self.redirect('/_edit/%s' % page_id)
