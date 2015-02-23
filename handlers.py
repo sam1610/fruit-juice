@@ -95,8 +95,7 @@ class EditPage(Handler):
         self.render("newpage.html", content=content, error=error)
 
     def get(self, page_id):
-        db_key = db.Key.from_path('Page', page_id)
-        page = db.get(db_key)
+        page = Page.get_by_key_name(page_id)
         if not page:
             self.render_form()
         else:
@@ -116,8 +115,7 @@ class EditPage(Handler):
 
 class WikiPage(Handler):
     def get(self, page_id):
-        db_key = db.Key.from_path('Page', page_id)
-        page = db.get(db_key)
+        page = Page.get_by_key_name(page_id)
         if page:
             self.write(page.content)
         else:
