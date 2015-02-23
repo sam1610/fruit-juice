@@ -116,4 +116,4 @@ class WikiPage(Handler):
         if page:
             self.write("The page ID is %s" % page_id)
         else:
-            self.write("Nope, not here.")
+            self.redirect('/_edit/%s' % page_id)
