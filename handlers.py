@@ -95,7 +95,12 @@ class EditPage(Handler):
         self.render("newpage.html", content=content, error=error)
 
     def get(self, page_id):
-        self.render_form()
+        db_key = db.Key.from_path('Page', page_id)
+        page = db.get(db_key)
+        if not page:
+            self.render_form()
+        else:
+            self.write("La pagina ya existe.")
 
     def post(self, page_id):
         content = self.request.get("content")
