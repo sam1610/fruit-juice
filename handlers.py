@@ -2,6 +2,7 @@ import webapp2
 from lib import utils
 from lib.DB.userdb import User
 from lib.DB.pagedb import Page
+import time
 
 
 class Handler(webapp2.RequestHandler):
@@ -92,15 +93,16 @@ class EditPage(Handler):
     def render_form(self, subject="", content="", error=""):
         self.render("newpage.html", subject=subject, content=content, error=error)
 
-    def get(self, pageid):
+    def get(self, page_id):
         self.render_form()
 
-    def post(self):
+    def post(self, page_id):
         subject = self.request.get("subject")
         content = self.request.get("content")
 
         if subject and content:
             new_page = Page(subject=subject, content=content)
+            self.write(page_id)
             new_page.put()
             time.sleep(1)            
             self.redirect('/%s' % subject)
