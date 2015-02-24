@@ -120,3 +120,8 @@ class WikiPage(Handler):
             self.write(page.content)
         else:
             self.redirect('/_edit/%s' % page_id)
+
+
+class Welcome(Handler):
+    def get(self):
+        self.write("<h1>Welcome!</h1>")
