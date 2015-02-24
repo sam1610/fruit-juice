@@ -8,6 +8,5 @@ app = webapp2.WSGIApplication([
     ('/signup/?', handlers.SignUpHandler),
     ('/login/?', handlers.LoginHandler),
     ('/_edit/' + PAGE_RE, handlers.EditPage),
-    ('/' + PAGE_RE, handlers.WikiPage),
-    ('/welcome', Welcome)
+    ('/' + PAGE_RE, handlers.WikiPage)
 ], debug=True)
