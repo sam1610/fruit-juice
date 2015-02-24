@@ -11,10 +11,17 @@ class Handler(webapp2.RequestHandler):
         self.response.out.write(*a, **kw)
 
     def render_str(self, template, **params):
+        params['user'] = self.user
         return utils.render_str(template, **params)
 
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
+
+    def initialize(self, *a, **kw):
+        webapp2.RequestHandler.initialize(self, *a, **kw)
+        cookie_val = self.request.cookies.get('username')
+        username = cookie_val and utils.check_secure_val(str(cookie_val))
+        self.user = username and User.get_by_id(int(username))
 
 
 class FrontHandler(Handler):
@@ -64,7 +71,7 @@ class SignUpHandler(Handler):
 
             u.put()
 
-            secure_username = utils.make_secure_val(str(username))
+            secure_username = utils.make_secure_val(u.key().id())
             self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
             self.redirect("/")
 
@@ -81,8 +88,8 @@ class LoginHandler(Handler):
             user = User.all().filter("username", username).get()
             if user:
                 h = user.password
-                if utils.valid_pw(username, password, h):           
-                    secure_username = utils.make_secure_val(str(username))
+                if utils.valid_pw(username, password, h):
+                    secure_username = utils.make_secure_val(str(user.key().id()))
                     self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
                     self.redirect('/')
                     return
