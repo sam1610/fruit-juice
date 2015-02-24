@@ -124,3 +124,5 @@ class WikiPage(Handler):
 
 C
 D
+A
+B
