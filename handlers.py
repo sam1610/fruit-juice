@@ -132,4 +132,4 @@ class WikiPage(Handler):
 class LogoutHandler(Handler):
     def get(self):
         self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % "")
-        #self.redirect("/signup")
+        self.redirect(self.request.referer)
