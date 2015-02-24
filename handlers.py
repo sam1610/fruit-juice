@@ -120,3 +120,7 @@ class WikiPage(Handler):
             self.write(page.content)
         else:
             self.redirect('/_edit/%s' % page_id)
+
+
+A
+B
