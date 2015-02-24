@@ -122,7 +122,3 @@ class WikiPage(Handler):
             self.redirect('/_edit/%s' % page_id)
 
 
-C
-D
-A
-B
