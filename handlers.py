@@ -124,7 +124,7 @@ class WikiPage(Handler):
     def get(self, page_id):
         page = Page.get_by_key_name(page_id)
         if page:
-            self.write(page.content)
+            self.render("wikipage.html", content=page.content)
         else:
             self.redirect('/_edit/%s' % page_id)
 
