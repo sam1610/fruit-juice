@@ -3,6 +3,7 @@ from google.appengine.ext import db
 from lib import utils
 from lib.DB.userdb import User
 from lib.DB.pagedb import Page
+from lib.DB.pagedb import PageContent
 import time
 
 
@@ -106,16 +107,16 @@ class EditPage(Handler):
         if not page:
             self.render_form()
         else:
-            self.write("La pagina ya existe.")
+            self.render_form()
 
     def post(self, page_id):
         content = self.request.get("content")
 
         if content:
-            new_page = Page(key_name = page_id, content=content)
-            new_page.put()
-            time.sleep(1)            
-            self.redirect('/%s' % page_id)
+            new_page = Page.get_or_insert(key_name=page_id)
+            version = new_page.current_v()
+            PageContent(page=new_page, content=content, version=version + 1).put()
+            self.write(version)
         else:
             self.render_form(content = content, error = "Content, please!")
 
@@ -124,7 +125,7 @@ class WikiPage(Handler):
     def get(self, page_id):
         page = Page.get_by_key_name(page_id)
         if page:
-            self.render("wikipage.html", content=page.content)
+            self.write("Desactivado por ahora.")
         else:
             self.redirect('/_edit/%s' % page_id)
 
