@@ -20,6 +20,9 @@
       <div class="col-md-6 text-right">
         <div class="login-area">
           {% if user %}
+            {% block actions %}
+            <!-- <a class="login-link" href="/_edit/">edit</a> | <a class="login-link" href="/logout">history</a> -->            
+            {% endblock %}
             {{user.username}} (<a class="login-link" href="/logout">logout</a>)
           {% else %}
             <a class="login-link" href="/login">login</a>

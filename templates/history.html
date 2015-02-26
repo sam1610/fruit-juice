@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block actions %}
+  <a class="login-link" href="/_edit/">edit</a> | <a class="login-link" href="/logout">history</a>
+{% endblock %}
+
 {% block content %}
   {% for page in pages %}
     <div> {{page.created}} | {{page.content}} </div>
