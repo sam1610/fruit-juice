@@ -125,7 +125,13 @@ class WikiPage(Handler):
     def get(self, page_id):
         page = Page.get_by_key_name(page_id)
         if page:
-            self.write("Desactivado por ahora.")
+            version = self.request.get('v')
+            page_object = page.get_by_v_number(int(version))
+            if page_object:
+                content = page_object.content
+                self.render("wikipage.html", content = content)
+            else:
+                self.write("Sorry, that version doesn't exist.")
         else:
             self.redirect('/_edit/%s' % page_id)
 
