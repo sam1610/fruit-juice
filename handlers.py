@@ -102,7 +102,7 @@ class EditPage(Handler):
     def render_form(self, content="", error=""):
         self.render("newpage.html", content=content, error=error)
 
-    def get(self, page_id):
+    def get(self, page_id="front"):
         page = Page.get_by_key_name(page_id)
         if not page:
             self.render_form()
