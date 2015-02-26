@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% for page in pages %}
+    <div> {{page.created}} | {{page.content}} </div>
+    <br>
+  {% endfor %}
+{% endblock %}
