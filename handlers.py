@@ -126,12 +126,17 @@ class WikiPage(Handler):
         page = Page.get_by_key_name(page_id)
         if page:
             version = self.request.get('v')
-            page_object = page.get_by_v_number(int(version))
-            if page_object:
+            if version and version.isdigit():
+                page_object = page.get_by_v_number(int(version))
+                if page_object:
+                    content = page_object.content
+                    self.render("wikipage.html", content = content)
+                else:
+                    self.write("Sorry, that version doesn't exist.")
+            else:
+                page_object = page.get_by_v_number(page.current_v())
                 content = page_object.content
                 self.render("wikipage.html", content = content)
-            else:
-                self.write("Sorry, that version doesn't exist.")
         else:
             self.redirect('/_edit/%s' % page_id)
 
