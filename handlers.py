@@ -102,12 +102,9 @@ class EditPage(Handler):
     def render_form(self, content="", error=""):
         self.render("newpage.html", content=content, error=error)
 
-    def get(self, page_id="front"):
+    def get(self, page_id):
         page = Page.get_by_key_name(page_id)
-        if not page:
-            self.render_form()
-        else:
-            self.render_form()
+        self.render_form()
 
     def post(self, page_id):
         content = self.request.get("content")
@@ -116,7 +113,8 @@ class EditPage(Handler):
             new_page = Page.get_or_insert(key_name=page_id)
             version = new_page.current_v()
             PageContent(page=new_page, content=content, version=version + 1).put()
-            self.write(version)
+            time.sleep(1)
+            self.redirect('%s' % page_id)
         else:
             self.render_form(content = content, error = "Content, please!")
 
@@ -138,7 +136,7 @@ class WikiPage(Handler):
                 content = page_object.content
                 self.render("wikipage.html", content = content)
         else:
-            self.redirect('/_edit/%s' % page_id)
+            self.redirect('/_edit%s' % page_id)
 
 
 class LogoutHandler(Handler):
