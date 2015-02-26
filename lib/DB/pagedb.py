@@ -16,8 +16,8 @@ class Page(db.Model):
 
 class PageContent(db.Model):
 	page = db.ReferenceProperty(Page,
-								collection_name = pages)
+								collection_name = "pages")
 	
 	created = db.DateTimeProperty(auto_now_add = True)
 	content = db.TextProperty(required = True)
-	version = db.IntegerProperty(required = True)
+	version = db.IntegerProperty(required = True, default = 0)
