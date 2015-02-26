@@ -6,7 +6,7 @@ app = webapp2.WSGIApplication([('/signup', handlers.SignUpHandler),
                                ('/login', handlers.LoginHandler),
                                ('/logout', handlers.LogoutHandler),
                                ('/_edit' + PAGE_RE, handlers.EditPage),
-                               ('/_history' + PAGE_RE, handlers.HistoryHandler)
+                               ('/_history' + PAGE_RE, handlers.HistoryHandler),
                                (PAGE_RE, handlers.WikiPage),
                                ],
                               debug=True)
