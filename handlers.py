@@ -149,7 +149,7 @@ class HistoryHandler(Handler):
     def get(self, page_id):
         page = Page.get_by_key_name(page_id)
         if page:
-            self.render("history.html", page=page)
+            self.render("history.html", pages=page.pages)
         else:
             self.write("Sorry, the page doesn't exist.")
 
