@@ -104,7 +104,13 @@ class EditPage(Handler):
 
     def get(self, page_id):
         page = Page.get_by_key_name(page_id)
-        self.render_form()
+        if self.user:
+            if page:
+                self.render_form(content=page.get_by_v_number(page.current_v()).content)
+            else:
+                self.render_form()
+        else:
+            self.redirect('/login')
 
     def post(self, page_id):
         content = self.request.get("content")
