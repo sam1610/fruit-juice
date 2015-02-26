@@ -106,7 +106,8 @@ class EditPage(Handler):
         page = Page.get_by_key_name(page_id)
         if self.user:
             if page:
-                self.render_form(content=page.get_by_v_number(page.current_v()).content)
+                version = int(self.request.get("v")) or page.current_v()
+                self.render_form(content=page.get_by_v_number(version).content)
             else:
                 self.render_form()
         else:
