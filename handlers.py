@@ -145,6 +145,14 @@ class WikiPage(Handler):
             self.redirect('/_edit%s' % page_id)
 
 
+class HistoryHandler(Handler):
+    def get(self, page_id):
+        page = Page.get_by_key_name(page_id)
+        if page:
+            self.render("history.html", page=page)
+        else:
+            self.write("Sorry, the page doesn't exist.")
+
 class LogoutHandler(Handler):
     def get(self):
         self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % "")
