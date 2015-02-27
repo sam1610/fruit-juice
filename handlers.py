@@ -138,13 +138,13 @@ class WikiPage(Handler):
                 page_object = page.get_by_v_number(int(version))
                 if page_object:
                     content = page_object.content
-                    self.render("wikipage.html", content = content)
+                    self.render("wikipage.html", test=page_id,content = content)
                 else:
                     self.write("Sorry, that version doesn't exist.")
             else:
                 page_object = page.get_by_v_number(page.current_v())
                 content = page_object.content
-                self.render("wikipage.html", content = content)
+                self.render("wikipage.html", test=page_id, content = content)
         else:
             self.redirect('/_edit%s' % page_id)
 
@@ -153,7 +153,7 @@ class HistoryHandler(Handler):
     def get(self, page_id):
         page = Page.get_by_key_name(page_id)
         if page:
-            self.render("history.html", pages=page.pages)
+            self.render("history.html", test=page_id, pages=page.pages)
         else:
             self.write("Sorry, the page doesn't exist.")
 
