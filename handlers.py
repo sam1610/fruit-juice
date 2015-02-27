@@ -28,6 +28,9 @@ class Handler(webapp2.RequestHandler):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and utils.check_secure_val(cookie_val)
 
+    def login(self, user):
+        self.set_secure_cookie('username', user.key().id())
+
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         username = self.read_secure_cookie('username')
@@ -46,7 +49,7 @@ class SignUpHandler(Handler):
         verify = self.request.get("verify")
         email = self.request.get("email")
 
-        args = dict(username = username, email = email)
+        args = dict(username = username)
         
         if not utils.valid_username(username):
             args['error_name'] = "That's not a valid username."
@@ -68,16 +71,14 @@ class SignUpHandler(Handler):
         if error_flag:
             self.render("signup.html", **args)
         else:
-            password = utils.make_pw_hash(username, password)
+            args['password'] = utils.make_pw_hash(username, password)
             if email:
-                u = User(username = username, password = password, email = email)
-            else:
-                u = User(username = username, password = password)
+                args['email'] = email
+            
+            user = User(**args)
+            user.put()
 
-            u.put()
-
-            secure_username = utils.make_secure_val(u.key().id())
-            self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
+            self.login(user)
             self.redirect("/")
 
 
@@ -94,12 +95,11 @@ class LoginHandler(Handler):
             if user:
                 h = user.password
                 if utils.valid_pw(username, password, h):
-                    secure_username = utils.make_secure_val(str(user.key().id()))
-                    self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % secure_username)
+                    self.login(user)
                     self.redirect('/')
                     return
-        error = "Invalid login"
-        self.render("login.html", username = username, error_login = error)
+        args = dict(username=username, error_login="Invalid login")
+        self.render("login.html", **args)
 
 
 class EditPage(Handler):
