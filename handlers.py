@@ -25,11 +25,6 @@ class Handler(webapp2.RequestHandler):
         self.user = username and User.get_by_id(int(username))
 
 
-class FrontHandler(Handler):
-    def get(self):
-        self.render('front.html')
-
-
 class SignUpHandler(Handler):
     def get(self):
         self.render("signup.html")
