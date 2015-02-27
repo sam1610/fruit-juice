@@ -18,10 +18,19 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+    def set_secure_cookie(self, name, val):
+        cookie_val = utils.make_secure_val(val)
+        self.response.headers.add_header(
+            'Set-Cookie', '%s=%s; Path=/' % (name, cookie_val)
+            )
+
+    def read_secure_cookie(self, name):
+        cookie_val = self.request.cookies.get(name)
+        return cookie_val and utils.check_secure_val(cookie_val)
+
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
-        cookie_val = self.request.cookies.get('username')
-        username = cookie_val and utils.check_secure_val(str(cookie_val))
+        username = self.read_secure_cookie('username')
         self.user = username and User.get_by_id(int(username))
 
 
