@@ -3,8 +3,10 @@ from google.appengine.ext import db
 class Page(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
-    def get_by_v_number(self, v_num):
-    	return self.pages.filter('version =', v_num).get()
+    def get_content(self, v_num=None):
+    	if not v_num:
+            v_num = self.current_v()
+        return self.pages.filter('version =', v_num).get()
 
     def current_v(self):
     	c_version = 0
