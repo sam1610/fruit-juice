@@ -105,7 +105,7 @@ class EditPage(Handler):
                 v = self.request.get("v")
                 if v and v.isdigit():
                     version = int(v)
-                self.render_form(test=page_id, content=page.get_by_v_number(version).content)
+                self.render_form(test=page_id, content=page.get_content(version).content)
             else:
                 self.render_form(test=page_id)
         else:
@@ -130,14 +130,14 @@ class WikiPage(Handler):
         if page:
             version = self.request.get('v')
             if version and version.isdigit():
-                page_object = page.get_by_v_number(int(version))
+                page_object = page.get_content(int(version))
                 if page_object:
                     content = page_object.content
                     self.render("wikipage.html", test=page_id,content = content)
                 else:
                     self.write("Sorry, that version doesn't exist.")
             else:
-                page_object = page.get_by_v_number(page.current_v())
+                page_object = page.get_content(page.current_v())
                 content = page_object.content
                 self.render("wikipage.html", test=page_id, content = content)
         else:
