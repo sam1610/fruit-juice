@@ -99,8 +99,8 @@ class LoginHandler(Handler):
 
 
 class EditPage(Handler):
-    def render_form(self, content="", error=""):
-        self.render("newpage.html", content=content, error=error)
+    def render_form(self, test="", content="", error=""):
+        self.render("newpage.html", test=test, content=content, error=error)
 
     def get(self, page_id):
         page = Page.get_by_key_name(page_id)
@@ -110,9 +110,9 @@ class EditPage(Handler):
                 v = self.request.get("v")
                 if v and v.isdigit():
                     version = int(v)
-                self.render_form(content=page.get_by_v_number(version).content)
+                self.render_form(test=page_id, content=page.get_by_v_number(version).content)
             else:
-                self.render_form()
+                self.render_form(test=page_id)
         else:
             self.redirect('/login')
 
