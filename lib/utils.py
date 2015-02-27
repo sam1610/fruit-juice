@@ -15,7 +15,7 @@ def render_str(template, **params):
 
 
 def hash_str(s):
-    return hmac.new(SECRET, s).hexdigest() #Por defecto usa md5, cambiar a sha-1 o sha256 para uso real.
+    return hmac.new(SECRET, str(s)).hexdigest() #Por defecto usa md5, cambiar a sha-1 o sha256 para uso real.
 
 
 def make_secure_val(s):
