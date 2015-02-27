@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block actions %}
+  <a class="login-link" href="{{test}}">view</a> | <a class="login-link" href="/_history{{test}}">history</a>
+{% endblock %}
+
 {% block content %}
   <h2>New Page</h2>
 
