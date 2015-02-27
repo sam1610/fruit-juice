@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block actions %}
+	<a class="login-link" href="/_edit{{test}}">edit</a> | <a class="login-link" href="/_history{{test}}">history</a>
+{% endblock %}
+
 {% block content %}
 	{{content | safe}}
 {% endblock %}
