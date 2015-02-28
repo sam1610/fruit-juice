@@ -4,9 +4,9 @@ class Page(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
     def get_content(self, v_num=None):
-    	if not v_num:
+    	if not v_num or not str(v_num).isdigit():
             v_num = self.current_v()
-        return self.pages.filter('version =', v_num).get()
+        return self.pages.filter('version =', int(v_num)).get()
 
     def current_v(self):
     	c_version = 0

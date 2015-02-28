@@ -139,7 +139,7 @@ class WikiPage(Handler):
         if page:
             version = self.request.get('v')
             if version and version.isdigit():
-                page_object = page.get_content(int(version))
+                page_object = page.get_content(version)
                 if page_object:
                     content = page_object.content
                     self.render("wikipage.html", test=page_id,content = content)
