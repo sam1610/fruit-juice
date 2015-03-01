@@ -6,7 +6,7 @@ class Page(db.Model):
     def get_content(self, v_num=None):
         if not v_num:
             v_num = self.current_v()
-        return self.pages.filter('created =', str(v_num)).get()
+        return self.pages.filter('created =', v_num).get()
 
     def current_v(self):
         return self.sorted_versions()[-1].created
