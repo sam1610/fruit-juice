@@ -122,8 +122,7 @@ class EditPage(Handler):
 
         if content:
             new_page = Page.get_or_insert(key_name=page_id)
-            version = new_page.current_v()
-            PageContent(page=new_page, content=content, version=version + 1).put()
+            PageContent(page=new_page, content=content).put()
             time.sleep(1)
             self.redirect('%s' % page_id)
         else:
@@ -135,16 +134,10 @@ class WikiPage(Handler):
         page = Page.get_by_key_name(page_id)
         if page:
             version = self.request.get('v')
-            page_object = page.get_content(page.current_v())
+            page_object = page.get_content(version)
             content = page_object.content
             self.render("wikipage.html", test=page_id, content = content)
-            # vs = page.sorted_db()
-            # tester = str(vs.created) + vs.content
-            # #for a in vs:
-            #     #tester += " NEWLINE " + str(a.created) + "-" + a.content
-
-            # self.write(tester)
-
+            self.write("The ID is: %s" % page_object.key().id())
         else:
             self.redirect('/_edit%s' % page_id)
 
