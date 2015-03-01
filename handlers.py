@@ -36,6 +36,12 @@ class Handler(webapp2.RequestHandler):
         username = self.read_secure_cookie('username')
         self.user = username and User.get_by_id(int(username))
 
+    def get_page(self, page_id):
+        page = Page.get_by_key_name(page_id)
+        if page:
+            version = self.request.get("v")
+            return page.get_content(version)
+
 
 class SignUpHandler(Handler):
     def get(self):
@@ -103,19 +109,19 @@ class LoginHandler(Handler):
 
 
 class EditPage(Handler):
-    def render_form(self, test="", content="", error=""):
-        self.render("newpage.html", test=test, content=content, error=error)
+    def render_form(self, page_id="", content="", error=""):
+        self.render("newpage.html", page_id=page_id, content=content, error=error)
 
     def get(self, page_id):
-        page = Page.get_by_key_name(page_id)
+        params = dict(page_id=page_id)
         if self.user:
-            if page:
-                version = self.request.get("v")
-                self.render_form(test=page_id, content=page.get_content(version).content)
-            else:
-                self.render_form(test=page_id)
+            page_object = self.get_page(page_id)
+            if page_object:
+                params['content'] = page_object.content        
+            self.render_form(**params)
         else:
             self.redirect('/login')
+
 
     def post(self, page_id):
         content = self.request.get("content")
@@ -130,14 +136,10 @@ class EditPage(Handler):
 
 
 class WikiPage(Handler):
-    def get(self, page_id):
-        page = Page.get_by_key_name(page_id)
-        if page:
-            version = self.request.get('v')
-            page_object = page.get_content(version)
-            content = page_object.content
-            self.render("wikipage.html", test=page_id, content = content)
-            self.write("The ID is: %s" % page_object.key().id())
+    def get(self, page_id):        
+        page_object = self.get_page(page_id)
+        if page_object:
+            self.render("wikipage.html", test=page_id, content = page_object.content)
         else:
             self.redirect('/_edit%s' % page_id)
 
@@ -146,7 +148,7 @@ class HistoryHandler(Handler):
     def get(self, page_id):
         page = Page.get_by_key_name(page_id)
         if page:
-            self.render("history.html", test=page_id, pages=page.pages)
+            self.render("history.html", page_id=page_id, pages=page.pages)
         else:
             self.write("Sorry, the page doesn't exist.")
 
