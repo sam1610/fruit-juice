@@ -5,11 +5,11 @@ class Page(db.Model):
 
     def get_content(self, v_num=None):
         if not v_num:
-            v_num = self.current_v()
-        return self.pages.filter('created =', v_num).get()
+            return self.current_v()
+        return PageContent.get_by_id(int(v_num))
 
     def current_v(self):
-        return self.sorted_versions()[-1].created
+        return self.sorted_versions()[-1]
 
     def sorted_versions(self):
         versions = sorted(self.pages, key=lambda page: page.created)
