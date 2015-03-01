@@ -9,11 +9,11 @@ class Page(db.Model):
         return self.pages.filter('version =', int(v_num)).get()
 
     def current_v(self):
-        c_version = 0
-        for page in self.pages:
-            if page.version > c_version:
-                c_version = page.version
-        return c_version
+        return self.sorted_versions()[-1].version
+
+    def sorted_versions(self):
+        versions = sorted(self.pages, key=lambda page: page.created)
+        return versions
 
 
 class PageContent(db.Model):
