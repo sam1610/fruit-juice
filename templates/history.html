@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 
 {% block actions %}
-  <a class="login-link" href="/_edit{{test}}">edit</a> | <a class="login-link" href="{{test}}">view</a>
+  <a class="login-link" href="/_edit{{page_id}}">edit</a> | <a class="login-link" href="{{page_id}}">view</a>
 {% endblock %}
 
 {% block content %}
   {% for page in pages %}
-    <div> {{page.created}} | {{page.content}} </div>
+    <div>
+    {{page.created}} | {{page.content}} 
+    <a href="{{page_id}}?v={{page.key().id()}}">view</a>
+    <a href="/_edit{{page_id}}?v={{page.key().id()}}">edit</a>
+    </div>
     <br>
   {% endfor %}
 {% endblock %}
