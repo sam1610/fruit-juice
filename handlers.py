@@ -138,6 +138,13 @@ class WikiPage(Handler):
             page_object = page.get_content(page.current_v())
             content = page_object.content
             self.render("wikipage.html", test=page_id, content = content)
+            # vs = page.sorted_db()
+            # tester = str(vs.created) + vs.content
+            # #for a in vs:
+            #     #tester += " NEWLINE " + str(a.created) + "-" + a.content
+
+            # self.write(tester)
+
         else:
             self.redirect('/_edit%s' % page_id)
 
