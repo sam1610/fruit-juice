@@ -3,7 +3,7 @@ from google.appengine.ext import db
 from lib import utils
 from lib.DB.userdb import User
 from lib.DB import pagedb
-import time
+from google.appengine.api import memcache
 
 
 class Handler(webapp2.RequestHandler):
@@ -129,13 +129,14 @@ class EditPage(Handler):
         else:
             self.redirect('/login')
 
-
+    def add_version(self, page_id, content):
+        new_page = pagedb.Page.get_or_insert(key_name=page_id, parent=pagedb.page_key())
+        pagedb.PageContent(page=new_page, content=content, parent=pagedb.page_key()).put()
+    
     def post(self, page_id):
         content = self.request.get("content")
-
         if content:
-            new_page = pagedb.Page.get_or_insert(key_name=page_id, parent=pagedb.page_key())
-            pagedb.PageContent(page=new_page, content=content, parent=pagedb.page_key()).put()
+            self.add_version(page_id, content)
             self.redirect('%s' % page_id)
         else:
             self.render_form(content = content, error = "Content, please!")
