@@ -37,12 +37,14 @@ class Handler(webapp2.RequestHandler):
         self.version = self.request.get("v")
 
     def get_page(self, page_id):
-        page = pagedb.Page.get_by_key_name(key_names=page_id, parent=pagedb.page_key())
-        if page:
-            version = self.request.get("v")
-            return page.get_content(version)
+        return pagedb.Page.get_by_key_name(key_names=page_id, parent=pagedb.page_key())
 
-    def get_version(self):
+    def get_version(self, page_id):
+        page = self.get_page(page_id)
+        if page:
+            return page.get_content(self.version)
+
+    def v_url(self):
         if self.version:
             return "?v=%s" % self.version
         return ""
@@ -120,7 +122,7 @@ class EditPage(Handler):
     def get(self, page_id):
         params = dict(page_id=page_id)
         if self.user:
-            page_object = self.get_page(page_id)
+            page_object = self.get_version(page_id)
             if page_object:
                 params['content'] = page_object.content        
             self.render_form(**params)
@@ -141,8 +143,8 @@ class EditPage(Handler):
 
 class WikiPage(Handler):
     def get(self, page_id):        
-        params = dict(page_id=page_id, version=self.get_version())
-        page_object = self.get_page(page_id)
+        params = dict(page_id=page_id, version=self.v_url())
+        page_object = self.get_version(page_id)
         if page_object:
             params['content'] = page_object.content
             self.render("wikipage.html", **params)
@@ -152,9 +154,9 @@ class WikiPage(Handler):
 
 class HistoryHandler(Handler):
     def get(self, page_id):
-        page = pagedb.Page.get_by_key_name(key_names=page_id, parent=pagedb.page_key())
+        page = self.get_page(page_id)
         if page:
-            self.render("history.html", page_id=page_id, pages=page.pages)
+            self.render("history.html", page_id=page_id, pages=page.sorted_versions())
         else:
             self.write("Sorry, the page doesn't exist.")
 
