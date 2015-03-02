@@ -12,10 +12,10 @@ class Page(db.Model):
         return PageContent.get_by_id(ids=int(v_num), parent=page_key())
 
     def current_v(self):
-        return self.sorted_versions()[-1]
+        return self.sorted_versions()[0]
 
     def sorted_versions(self):
-        versions = sorted(self.pages, key=lambda page: page.created)
+        versions = sorted(self.pages, key=lambda page: page.created, reverse=True)
         return versions
 
 
