@@ -35,12 +35,18 @@ class Handler(webapp2.RequestHandler):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         username = self.read_secure_cookie('username')
         self.user = username and User.get_by_id(int(username))
+        self.version = self.request.get("v")
 
     def get_page(self, page_id):
         page = Page.get_by_key_name(page_id)
         if page:
             version = self.request.get("v")
             return page.get_content(version)
+
+    def get_version(self):
+        if self.version:
+            return "?v=%s" % self.version
+        return ""
 
 
 class SignUpHandler(Handler):
@@ -137,9 +143,11 @@ class EditPage(Handler):
 
 class WikiPage(Handler):
     def get(self, page_id):        
+        params = dict(page_id=page_id, version=self.get_version())
         page_object = self.get_page(page_id)
         if page_object:
-            self.render("wikipage.html", test=page_id, content = page_object.content)
+            params['content'] = page_object.content
+            self.render("wikipage.html", **params)
         else:
             self.redirect('/_edit%s' % page_id)
 
