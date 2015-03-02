@@ -2,8 +2,7 @@ import webapp2
 from google.appengine.ext import db
 from lib import utils
 from lib.DB.userdb import User
-from lib.DB.pagedb import Page
-from lib.DB.pagedb import PageContent
+from lib.DB import pagedb
 import time
 
 
@@ -38,7 +37,7 @@ class Handler(webapp2.RequestHandler):
         self.version = self.request.get("v")
 
     def get_page(self, page_id):
-        page = Page.get_by_key_name(key_names=page_id, parent=page_key())
+        page = pagedb.Page.get_by_key_name(key_names=page_id, parent=pagedb.page_key())
         if page:
             version = self.request.get("v")
             return page.get_content(version)
@@ -114,10 +113,6 @@ class LoginHandler(Handler):
         self.render("login.html", **args)
 
 
-def page_key(group = 'pages'):
-    return db.Key.from_path('wiki', group)
-
-
 class EditPage(Handler):
     def render_form(self, page_id="", content="", error=""):
         self.render("newpage.html", page_id=page_id, content=content, error=error)
@@ -137,8 +132,8 @@ class EditPage(Handler):
         content = self.request.get("content")
 
         if content:
-            new_page = Page.get_or_insert(key_name=page_id, parent=page_key())
-            PageContent(page=new_page, content=content, parent=page_key()).put()
+            new_page = pagedb.Page.get_or_insert(key_name=page_id, parent=pagedb.page_key())
+            pagedb.PageContent(page=new_page, content=content, parent=pagedb.page_key()).put()
             self.redirect('%s' % page_id)
         else:
             self.render_form(content = content, error = "Content, please!")
@@ -157,7 +152,7 @@ class WikiPage(Handler):
 
 class HistoryHandler(Handler):
     def get(self, page_id):
-        page = Page.get_by_key_name(key_names=page_id, parent=page_key())
+        page = pagedb.Page.get_by_key_name(key_names=page_id, parent=pagedb.page_key())
         if page:
             self.render("history.html", page_id=page_id, pages=page.pages)
         else:
