@@ -6,6 +6,14 @@ from lib.DB import pagedb
 from google.appengine.api import memcache
 
 
+def page_cache(page_id):
+    page = memcache.get(page_id)
+    if not page:
+        page = pagedb.Page.get_by_key_name(key_names=page_id, parent=pagedb.page_key())
+        memcache.set(page_id, page)
+    return page
+
+
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
