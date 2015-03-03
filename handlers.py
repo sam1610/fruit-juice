@@ -45,7 +45,7 @@ class Handler(webapp2.RequestHandler):
         self.version = self.request.get("v")
 
     def get_page(self, page_id):
-        return pagedb.Page.get_by_key_name(key_names=page_id, parent=pagedb.page_key())
+        return page_cache(page_id)
 
     def get_version(self, page_id):
         page = self.get_page(page_id)
