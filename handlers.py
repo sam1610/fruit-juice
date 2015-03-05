@@ -124,11 +124,11 @@ class LoginHandler(Handler):
 
 
 class EditPage(Handler):
-    def render_form(self, page_id="", content="", error=""):
-        self.render("newpage.html", page_id=page_id, content=content, error=error)
+    def render_form(self, page_id="", content="", error="", version=""):
+        self.render("newpage.html", page_id=page_id, content=content, error=error, version=version)
 
     def get(self, page_id):
-        params = dict(page_id=page_id)
+        params = dict(page_id=page_id, version=self.v_url())
         if self.user:
             page_object = self.get_version(page_id)
             if page_object:
