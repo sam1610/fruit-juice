@@ -8,7 +8,8 @@ from google.appengine.api import memcache
 def page_cache(page_id):
     page = memcache.get(page_id)
     if not page:
-        page = pagedb.Page.get_by_key_name(key_names=page_id, parent=pagedb.page_key())
+        page = pagedb.Page.get_by_key_name(key_names=page_id,
+                                           parent=pagedb.page_key())
         memcache.set(page_id, page)
     return page
 
@@ -26,9 +27,8 @@ class Handler(webapp2.RequestHandler):
 
     def set_secure_cookie(self, name, val):
         cookie_val = utils.make_secure_val(val)
-        self.response.headers.add_header(
-            'Set-Cookie', '%s=%s; Path=/' % (name, cookie_val)
-            )
+        self.response.headers.add_header('Set-Cookie',
+                                         '%s=%s; Path=/' % (name, cookie_val))
 
     def read_secure_cookie(self, name):
         cookie_val = self.request.cookies.get(name)
@@ -141,8 +141,10 @@ class EditPage(Handler):
             self.redirect('/login')
 
     def add_version(self, page_id, content):
-        new_page = pagedb.Page.get_or_insert(key_name=page_id, parent=pagedb.page_key())
-        pagedb.PageContent(page=new_page, content=content, parent=pagedb.page_key()).put()
+        new_page = pagedb.Page.get_or_insert(key_name=page_id,
+                                             parent=pagedb.page_key())
+        pagedb.PageContent(page=new_page, content=content,
+                           parent=pagedb.page_key()).put()
     
     def post(self, page_id):
         content = self.request.get("content")
@@ -168,11 +170,13 @@ class HistoryHandler(Handler):
     def get(self, page_id):
         page = self.get_page(page_id)
         if page:
-            self.render("history.html", page_id=page_id, pages=page.sorted_versions())
+            self.render("history.html", page_id=page_id,
+                        pages=page.sorted_versions())
         else:
             self.write("Sorry, the page doesn't exist.")
 
 class LogoutHandler(Handler):
     def get(self):
-        self.response.headers.add_header('Set-Cookie', 'username=%s; Path=/' % "")
+        self.response.headers.add_header('Set-Cookie', 
+                                         'username=%s; Path=/' % "")
         self.redirect(self.request.referer)
