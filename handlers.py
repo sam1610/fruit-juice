@@ -124,16 +124,20 @@ class LoginHandler(Handler):
 
 
 class EditPage(Handler):
+    restricted_values = ['/signup', '/login', '/logout', '/_edit', '/_history']
     def render_form(self, **kwargs):
         self.render("newpage.html", **kwargs)
 
     def get(self, page_id):
         params = dict(page_id=page_id, version=self.v_url())
         if self.user:
-            page_object = self.get_version(page_id)
-            if page_object:
-                params['content'] = page_object.content        
-            self.render_form(**params)
+            if page_id not in self.restricted_values:
+                page_object = self.get_version(page_id)
+                if page_object:
+                    params['content'] = page_object.content        
+                self.render_form(**params)
+            else:
+                self.write("That page is restricted.")
         else:
             self.redirect('/login')
 
