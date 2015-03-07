@@ -179,5 +179,5 @@ class HistoryHandler(Handler):
 class LogoutHandler(Handler):
     def get(self):
         self.response.headers.add_header('Set-Cookie', 
-                                         'username=%s; Path=/' % "")
+                                         'username=%s; Path=/' % '')
         self.redirect(self.request.referer)
