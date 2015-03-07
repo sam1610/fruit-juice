@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block actions %}
-	{% if user %}
-	<a class="login-link" href="/_edit{{page_id}}{{version}}">edit</a>
-	|
-	{% endif %}	
-	 <a class="login-link" href="/_history{{page_id}}">history</a>
+  {% if user %}
+  <a class="login-link" href="/_edit{{page_id}}{{version}}">edit</a>
+  |
+  {% endif %} 
+   <a class="login-link" href="/_history{{page_id}}">history</a>
 {% endblock %}
 
 {% block content %}
-	{{content | safe}}
+  {{content | safe}}
 {% endblock %}
