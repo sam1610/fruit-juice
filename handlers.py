@@ -41,7 +41,7 @@ class Handler(webapp2.RequestHandler):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         username = self.read_secure_cookie('username')
         self.user = username and userdb.User.get_by_id(int(username))
-        self.version = self.request.get("v")
+        self.version = self.request.get('v')
 
     def get_page(self, page_id):
         return page_cache(page_id)
@@ -53,30 +53,31 @@ class Handler(webapp2.RequestHandler):
 
     def v_url(self):
         if self.version:
-            return "?v=%s" % self.version
-        return ""
+            return '?v=%s' % self.version
+        return ''
 
 
 class SignUpHandler(Handler):
     def get(self):
-        self.render("signup.html")
+        self.render('signup.html')
 
     def post(self):
         error_flag = False      
 
-        username = self.request.get("username")
-        password = self.request.get("password")
-        verify = self.request.get("verify")
-        email = self.request.get("email")
+        username = self.request.get('username')
+        password = self.request.get('password')
+        verify = self.request.get('verify')
+        email = self.request.get('email')
 
         args = dict(username = username)
         
+        #Double quotes are used when ' is present to avoid escaping.
         if not utils.valid_username(username):
             args['error_name'] = "That's not a valid username."
             error_flag = True
-        dbo = userdb.User.all().filter("username",username)
+        dbo = userdb.User.all().filter('username', username)
         if dbo.get():
-            args['error_name'] = "The user already exists."
+            args['error_name'] = 'The user already exists.'
             error_flag = True
         if not utils.valid_password(password):
             args['error_pass'] = "That's not a valid password."
@@ -84,12 +85,12 @@ class SignUpHandler(Handler):
         if not password == verify:
             args['error_verify'] = "Your passwords didn't match."
             error_flag = True
-        if email != "" and not utils.valid_email(email):
+        if email != '' and not utils.valid_email(email):
             args['error_email'] = "That's not a valid email."
-            error_flag = "True"
+            error_flag = True
 
         if error_flag:
-            self.render("signup.html", **args)
+            self.render('signup.html', **args)
         else:
             args['password'] = utils.make_pw_hash(username, password)
             if email:
@@ -104,31 +105,31 @@ class SignUpHandler(Handler):
 
 class LoginHandler(Handler):
     def get(self):
-        self.render("login.html")
+        self.render('login.html')
 
     def post(self):
-        username = self.request.get("username")
-        password = self.request.get("password")
+        username = self.request.get('username')
+        password = self.request.get('password')
 
         if username and password:
-            user = userdb.User.all().filter("username", username).get()
+            user = userdb.User.all().filter('username', username).get()
             if user:
                 h = user.password
                 if utils.valid_pw(username, password, h):
                     self.login(user)
                     self.redirect('/')
                     return
-        args = dict(username=username, error_login="Invalid login")
-        self.render("login.html", **args)
+        args = dict(username=username, error_login='Invalid login')
+        self.render('login.html', **args)
 
 
 class EditPage(Handler):
     restricted_values = ['/signup', '/login', '/logout', '/_edit', '/_history']
     def render_form(self, **kwargs):
-        self.render("newpage.html", **kwargs)
+        self.render('newpage.html', **kwargs)
 
     def get(self, page_id):
-        params = dict(page_id=page_id, version=self.v_url())
+        params = dict(page_id = page_id, version = self.v_url())
         if self.user:
             if page_id not in self.restricted_values:
                 page_object = self.get_version(page_id)
@@ -136,7 +137,7 @@ class EditPage(Handler):
                     params['content'] = page_object.content        
                 self.render_form(**params)
             else:
-                self.write("That page is restricted.")
+                self.write('That page is restricted.')
         else:
             self.redirect('/login')
 
@@ -147,21 +148,21 @@ class EditPage(Handler):
                            parent=pagedb.page_key()).put()
     
     def post(self, page_id):
-        content = self.request.get("content")
+        content = self.request.get('content')
         if content:
             self.add_version(page_id, content)
             self.redirect('%s' % page_id)
         else:
-            self.render_form(content = content, error = "Content, please!")
+            self.render_form(content=content, error='Content, please!')
 
 
 class WikiPage(Handler):
     def get(self, page_id):        
-        params = dict(page_id=page_id, version=self.v_url())
+        params = dict(page_id = page_id, version = self.v_url())
         page_object = self.get_version(page_id)
         if page_object:
             params['content'] = page_object.content
-            self.render("wikipage.html", **params)
+            self.render('wikipage.html', **params)
         else:
             self.redirect('/_edit%s' % page_id)
 
@@ -170,7 +171,7 @@ class HistoryHandler(Handler):
     def get(self, page_id):
         page = self.get_page(page_id)
         if page:
-            self.render("history.html", page_id=page_id,
+            self.render('history.html', page_id=page_id,
                         pages=page.sorted_versions())
         else:
             self.write("Sorry, the page doesn't exist.")
