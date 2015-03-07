@@ -1,5 +1,4 @@
 import webapp2
-from google.appengine.ext import db
 from lib import utils
 from lib.DB.userdb import User
 from lib.DB import pagedb
