@@ -1,6 +1,6 @@
 import webapp2
 from lib import utils
-from lib.DB.userdb import User
+from lib.DB import userdb
 from lib.DB import pagedb
 from google.appengine.api import memcache
 
@@ -40,7 +40,7 @@ class Handler(webapp2.RequestHandler):
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         username = self.read_secure_cookie('username')
-        self.user = username and User.get_by_id(int(username))
+        self.user = username and userdb.User.get_by_id(int(username))
         self.version = self.request.get("v")
 
     def get_page(self, page_id):
@@ -74,7 +74,7 @@ class SignUpHandler(Handler):
         if not utils.valid_username(username):
             args['error_name'] = "That's not a valid username."
             error_flag = True
-        dbo = User.all().filter("username",username)
+        dbo = userdb.User.all().filter("username",username)
         if dbo.get():
             args['error_name'] = "The user already exists."
             error_flag = True
@@ -95,7 +95,7 @@ class SignUpHandler(Handler):
             if email:
                 args['email'] = email
             
-            user = User(**args)
+            user = userdb.User(**args)
             user.put()
 
             self.login(user)
@@ -111,7 +111,7 @@ class LoginHandler(Handler):
         password = self.request.get("password")
 
         if username and password:
-            user = User.all().filter("username", username).get()
+            user = userdb.User.all().filter("username", username).get()
             if user:
                 h = user.password
                 if utils.valid_pw(username, password, h):
