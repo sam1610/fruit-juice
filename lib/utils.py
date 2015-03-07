@@ -5,6 +5,7 @@ import hashlib, hmac, random
 
 SECRET = 'imnotsosecret'
 
+#Jinja2 variables and functions:
 template_dir = os.path.join(os.path.abspath(__file__ + "/../../"), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
@@ -14,8 +15,9 @@ def render_str(template, **params):
     return t.render(params)
 
 
+#Hashing functions for secure cookies and values in the DB:
 def hash_str(s):
-    return hmac.new(SECRET, str(s)).hexdigest() #Por defecto usa md5, cambiar a sha-1 o sha256 para uso real.
+    return hmac.new(SECRET, str(s)).hexdigest()
 
 
 def make_secure_val(s):
@@ -45,6 +47,7 @@ def valid_pw(name, pw, h):
     return h == make_pw_hash(name, pw, salt)
 
 
+#Functions to check the validity of user inputs:
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):
     return username and USER_RE.match(username)
