@@ -2,7 +2,6 @@ import os
 import jinja2
 import string, re
 import hashlib, hmac, random
-from google.appengine.ext import db
 
 SECRET = 'imnotsosecret'
 

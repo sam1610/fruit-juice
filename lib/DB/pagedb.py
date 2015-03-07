@@ -1,4 +1,4 @@
-#from google.appengine.ext import db
+from google.appengine.ext import db
 
 def page_key(group = 'pages'):
     return db.Key.from_path('wiki', group)
