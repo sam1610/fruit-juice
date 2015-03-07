@@ -14,7 +14,7 @@
   {% for page in pages %}
     <div class="row">
       <div class="col-md-3">
-        {{page.created}}
+        {{page.created.strftime("%a %b %d %H:%M:%S %Y")}}
       </div>
       <div class="col-md-7">
         {{page.content[0:100]}}
