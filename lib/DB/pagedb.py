@@ -9,7 +9,7 @@ def page_key(group = 'pages'):
 #Page class, with multiple versions per page
 #One to many relation with PageContent
 class Page(db.Model):
-    last_modified = db.DateTimeProperty(auto_now = True)
+    last_modified = db.DateTimeProperty(auto_now=True)
 
     def get_content(self, v_num=None):
         if not v_num:
@@ -24,15 +24,14 @@ class Page(db.Model):
 
     #Return list of versions sorted from old to new
     def sorted_versions(self):
-        versions = sorted(
-            self.pages, key=lambda page: page.created, reverse=True
-            )
+        versions = sorted(self.pages, key=lambda page: page.created,
+                          reverse=True)
         return versions
 
 
 class PageContent(db.Model):
     page = db.ReferenceProperty(Page,
-                                collection_name = "pages")
+                                collection_name='pages')
     
-    created = db.DateTimeProperty(auto_now_add = True)
-    content = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add=True)
+    content = db.TextProperty(required=True)
