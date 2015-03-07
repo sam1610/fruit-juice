@@ -6,9 +6,9 @@ import hashlib, hmac, random
 SECRET = 'imnotsosecret'
 
 #Jinja2 variables and functions:
-template_dir = os.path.join(os.path.abspath(__file__ + "/../../"), 'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
-                               autoescape = True)
+template_dir = os.path.join(os.path.abspath(__file__ + '/../../'), 'templates')
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
+                               autoescape=True)
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
@@ -21,7 +21,7 @@ def hash_str(s):
 
 
 def make_secure_val(s):
-    return "%s|%s" % (s, hash_str(s))
+    return '%s|%s' % (s, hash_str(s))
 
 
 def check_secure_val(h):
@@ -35,7 +35,7 @@ def make_salt():
     return ''.join(random.choice(string.letters) for x in xrange(5))
 
 
-def make_pw_hash(name, pw, salt = None):
+def make_pw_hash(name, pw, salt=None):
     if not salt:
         salt = make_salt()
     h = hashlib.sha256(name + pw + salt).hexdigest()
@@ -48,7 +48,7 @@ def valid_pw(name, pw, h):
 
 
 #Functions to check the validity of user inputs:
-USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+USER_RE = re.compile(r'^[a-zA-Z0-9_-]{3,20}$')
 def valid_username(username):
     return username and USER_RE.match(username)
 
