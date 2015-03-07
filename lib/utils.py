@@ -1,7 +1,11 @@
 import os
+import string
+import re
+import random
+import hashlib
+import hmac
 import jinja2
-import string, re
-import hashlib, hmac, random
+
 
 SECRET = 'imnotsosecret'
 
