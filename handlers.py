@@ -148,12 +148,13 @@ class EditPage(Handler):
                            parent=pagedb.page_key()).put()
     
     def post(self, page_id):
-        content = self.request.get('content')
-        if content:
-            self.add_version(page_id, content)
-            self.redirect('%s' % page_id)
-        else:
-            self.render_form(content=content, error='Content, please!')
+        if self.user:
+            content = self.request.get('content')
+            if content:
+                self.add_version(page_id, content)
+                self.redirect('%s' % page_id)
+            else:
+                self.render_form(content=content, error='Content, please!')
 
 
 class WikiPage(Handler):
