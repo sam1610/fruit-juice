@@ -181,4 +181,8 @@ class LogoutHandler(Handler):
     def get(self):
         self.response.headers.add_header('Set-Cookie', 
                                          'username=%s; Path=/' % '')
-        self.redirect(self.request.referer)
+        ref_page = self.request.referer
+        if ref_page:
+            self.redirect(ref_page)
+        else:
+            self.redirect('/')
